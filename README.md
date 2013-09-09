@@ -18,7 +18,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    $ cat spec/migrations/create_users_spec.rb
+    
+```ruby
+require 'spec_helper'
+
+describe 'db/migrations/001_create_users.rb' do
+  it "creates the users table" do
+    migrate! :up
+    db.table_exists?(:users).should be_true
+    migrate! :down
+    db.table_exists?(:users).should be_false
+  end
+end
+```
 
 ## Credits
 
