@@ -20,6 +20,10 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Credits
+
+`support/{matchers,helpers}.rb` originally come from [rspec-rails](https://github.com/rspec/rspec-rails).
+
 ## Contributing
 
 1. Fork it
