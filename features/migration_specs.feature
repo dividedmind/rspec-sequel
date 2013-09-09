@@ -10,8 +10,10 @@ Feature: migration specs
       describe 'db/migrations/001_create_users.rb' do
         it "creates the users table" do
           db.table_exists?(:users).should be_false
-          migrate!
+          migrate! :up
           db.table_exists?(:users).should be_true
+          migrate! :down
+          db.table_exists?(:users).should be_false
         end
       end
       """
