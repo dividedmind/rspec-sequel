@@ -1,6 +1,7 @@
 # RSpec::Sequel
 
-TODO: Write a gem description
+Sometimes migrations are less than trivial, especially when they need to transform data instead of just reshaping the database.
+That makes one justifiably uneasy when it comes to running them; the comfort provided by unit tests wasn't usually present or easy to attain. Until now!
 
 ## Installation
 
@@ -35,7 +36,7 @@ end
 
 ## Credits
 
-`support/{matchers,helpers}.rb` originally come from [rspec-rails](https://github.com/rspec/rspec-rails).
+`spec/support/{matchers,helpers}.rb` originally come from [rspec-rails](https://github.com/rspec/rspec-rails).
 
 ## Contributing
 
