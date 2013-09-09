@@ -34,5 +34,14 @@ module RSpec::Sequel
       end
     end
     
+    describe "::migration" do
+      it "loads the migration from the migration_path" do
+        instance.stub migration_path: File.expand_path("../test_migration.rb", __FILE__)
+        
+        instance.migration.up.call.should == "I'm up!"
+        instance.migration.down.call.should == "I'm down!"
+      end
+    end
+  
   end
 end
