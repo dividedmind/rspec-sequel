@@ -6,6 +6,10 @@ module RSpec::Sequel
         let(:db) { Sequel::connect 'sqlite:/' }
       end
     end
+    
+    def migrate! direction
+      migration.apply db, direction
+    end
 
   end
 end

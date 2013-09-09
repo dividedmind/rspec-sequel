@@ -11,15 +11,28 @@ module RSpec::Sequel
       end
     end
     
+    let(:instance) { group.new }
+    
     describe '::db' do
       it "is an in-memory sqlite db by default" do
-        group.new.db.uri.should == 'sqlite:/'
+        instance.db.uri.should == 'sqlite:/'
       end
 
       it "can be overriden" do
         group.let(:db) { 'notreallyadb' }
-        group.new.db.should == 'notreallyadb'
+        instance.db.should == 'notreallyadb'
       end
     end
+    
+    describe "#migrate!" do
+      it "applies the migration in the proper direction" do
+        migration = double "migration"
+        instance.stub migration: migration, db: 'notreallyadb'
+        
+        migration.should_receive(:apply).with('notreallyadb', :dir)
+        instance.migrate! :dir
+      end
+    end
+    
   end
 end
