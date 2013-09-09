@@ -3,7 +3,7 @@ Feature: migration specs
   The developer should be able to easily spec them
   
   Scenario: simple passing spec
-    Given a file named "db/migrations/001_create_users_spec.rb" with:
+    Given a file named "spec/migrations/001_create_users_spec.rb" with:
       """ruby
       require 'spec_helper'
       
