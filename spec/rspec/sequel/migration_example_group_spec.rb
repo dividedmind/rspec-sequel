@@ -45,8 +45,8 @@ module RSpec::Sequel
     
     describe "::migration_path" do
       it "defaults to the group title" do
-        group.stub description: '/some/migration/path'
-        instance.migration_path.should == '/some/migration/path'
+        group.stub description: 'some/migration/path'
+        instance.migration_path.should == "#{Dir.pwd}/some/migration/path"
       end
     end
     
