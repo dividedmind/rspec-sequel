@@ -5,6 +5,8 @@ module RSpec::Sequel
       base.class_eval do
         let(:db) { Sequel::connect 'sqlite:/' }
         let(:migration) { load_migration migration_path }
+        migration_example_group = self
+        let(:migration_path) { migration_example_group.description }
       end
     end
     

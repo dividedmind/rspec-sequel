@@ -42,6 +42,13 @@ module RSpec::Sequel
         instance.migration.down.call.should == "I'm down!"
       end
     end
-  
+    
+    describe "::migration_path" do
+      it "defaults to the group title" do
+        group.stub description: '/some/migration/path'
+        instance.migration_path.should == '/some/migration/path'
+      end
+    end
+    
   end
 end
