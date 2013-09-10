@@ -27,13 +27,14 @@ module RSpec::Sequel
         end
         let(:db) { db }
         after(:all) { db.drop_schema :spec, cascade: true, if_exists: true }
+        around(:each) { |ex|  db.transaction(rollback: :always) { ex.run  } }
       end
     end
     
     private
     def load_migration path
       Sequel.extension :migration
-      require path
+      load path
       Sequel::Migration.descendants.pop
     end
 

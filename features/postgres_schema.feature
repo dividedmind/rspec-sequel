@@ -3,7 +3,6 @@ Feature: postgres schema
   I want to run them on a Postgres database
   With an explicitly defined schema
 
-  @wip
   Scenario: schema isolation
     Given an empty database
     And a file named "spec/migrations/001_create_users_spec.rb" with:
@@ -20,6 +19,12 @@ Feature: postgres schema
         describe "down" do
           it "drops the table" do
             db.table_exists?(:users).should be_true
+            migrate! :down
+            db.table_exists?(:users).should be_false
+          end
+
+          it "drops the table even when there are still records" do
+            db[:users].insert id: 42
             migrate! :down
             db.table_exists?(:users).should be_false
           end
