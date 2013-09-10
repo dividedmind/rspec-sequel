@@ -7,7 +7,8 @@ module RSpec::Sequel
         let(:db) { Sequel::connect 'sqlite:/' }
         let(:migration) { load_migration migration_path }
         migration_example_group = self
-        let(:migration_path) { File.expand_path(migration_example_group.description, Dir.pwd) }
+        basedir = if defined? Rails then Rails.root else Dir.pwd end
+        let(:migration_path) { File.expand_path(migration_example_group.description, basedir) }
       end
     end
     

@@ -48,6 +48,12 @@ module RSpec::Sequel
         group.stub description: 'some/migration/path'
         instance.migration_path.should == "#{Dir.pwd}/some/migration/path"
       end
+      
+      it "uses the Rails root if available" do
+        stub_const 'Rails', double(root: '/railroot')
+        group.stub description: 'some/migration/path'
+        instance.migration_path.should == "/railroot/some/migration/path"
+      end
     end
     
     describe "::postgres_schema" do
