@@ -50,5 +50,26 @@ module RSpec::Sequel
       end
     end
     
+    describe "::postgres_schema" do
+      let(:postgres) { RSpec::Sequel::Test::postgres }
+      
+      it "connects to the same database as the model, only with 'spec' schema" do
+        stub_const 'Sequel::DATABASES', [postgres]
+        group.postgres_schema
+        instance.db.opts.but(:orig_opts).should == postgres.opts.merge(search_path: %w(spec)).but(:orig_opts)
+      end
+      
+      it "runs the code inside on the database" do
+        stub_const 'Sequel::DATABASES', [postgres]
+        group.postgres_schema do
+          create_table :some_table do
+            primary_key :id
+          end
+        end
+        
+        postgres.table_exists?(:spec__some_table).should be_true
+      end
+    end
+    
   end
 end

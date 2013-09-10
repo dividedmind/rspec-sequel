@@ -1,7 +1,11 @@
 require 'aruba/cucumber'
+require_relative 'postgres'
 
 Before do
-  step %q{a file named "spec/spec_helper.rb" with:}, %q{require 'rspec/sequel'}
+  step %q{a file named "spec/spec_helper.rb" with:}, %Q{
+    require 'rspec/sequel'
+    Sequel::connect '#{RSpec::Sequel::Test::postgres.uri}'
+  }
   step %q{a file named "db/migrations/001_create_users.rb" with:}, %q{
     Sequel.migration do
       up do

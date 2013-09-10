@@ -18,3 +18,9 @@ module Helpers
 
   RSpec.configure {|c| c.include self}
 end
+
+class Hash
+  def but key
+    select {|k, _| k != key }
+  end
+end
