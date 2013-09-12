@@ -33,3 +33,43 @@ Feature: postgres schema
       """
     When I run `rspec spec`
     Then the examples should pass
+
+  Scenario: different schemas in different contexts
+    Given an empty database
+    And a file named "spec/migrations/002_add_users_foo_spec.rb" with:
+      """ruby
+      require 'spec_helper'
+      
+      describe 'db/migrations/002_add_users_foo.rb' do
+        describe "up" do
+          postgres_schema do
+            create_table :users do
+              primary_key :id
+            end
+          end
+      
+          it "adds the foo column" do
+            migrate! :up
+            db[:users].columns.should include(:foo)
+          end
+        end
+
+        describe "down" do
+          postgres_schema do
+            create_table :users do
+              primary_key :id
+              String :foo
+            end
+          end
+      
+          it "removes the foo column" do
+            migrate! :down
+            db[:users].columns.should_not include(:foo)
+          end
+        end
+      end
+      """
+    When I run `rspec spec`
+    Then the examples should pass
+
+  

@@ -65,7 +65,7 @@ module RSpec::Sequel
         instance.db.opts.but(:orig_opts).should == postgres.opts.merge(search_path: %w(spec)).but(:orig_opts)
       end
       
-      it "runs the code inside on the database" do
+      it "runs the code inside on the database with a clean schema before running the context" do
         stub_const 'Sequel::DATABASES', [postgres]
         group.postgres_schema do
           create_table :some_table do
@@ -73,7 +73,14 @@ module RSpec::Sequel
           end
         end
         
-        postgres.table_exists?(:spec__some_table).should be_true
+        postgres.table_exists?(:spec__some_table).should be_false
+        
+        group.example { postgres.table_exists?(:spec__some_table).should be_true }
+        reporter = RSpec::Core::Reporter.new
+        reporter.should_receive :example_passed
+        group.run(reporter)
+        
+        postgres.table_exists?(:spec__some_table).should be_false
       end
     end
     

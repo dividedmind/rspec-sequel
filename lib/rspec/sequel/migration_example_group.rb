@@ -20,8 +20,9 @@ module RSpec::Sequel
       def postgres_schema &block
         db = Sequel::DATABASES.find { |db| db.database_type == :postgres }
         raise "Please connect to a Postgres database (eg. in spec_helper) before using ::postgres_schema." unless db
-        db = Sequel.connect(db.opts.merge search_path: ['spec']).tap do |db|
-          db.drop_schema :spec, cascade: true, if_exists: true
+        db = Sequel.connect(db.opts.merge search_path: ['spec'])
+        db.drop_schema :spec, cascade: true, if_exists: true
+        before(:all) do
           db.create_schema :spec
           db.instance_eval &block if block
         end
