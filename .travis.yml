@@ -1,3 +1,9 @@
 language: ruby
 rvm:
   - 2.7.0
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database rspec_sequel_test;' -U postgres
+env:
+  - TEST_DATABASE=postgres://postgres@localhost/rspec_sequel_test
