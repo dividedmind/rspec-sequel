@@ -9,11 +9,11 @@ Feature: migration specs
       
       describe 'db/migrations/001_create_users.rb' do
         it "creates the users table" do
-          db.table_exists?(:users).should be_false
+          expect(db.table_exists?(:users)).to be false
           migrate! :up
-          db.table_exists?(:users).should be_true
+          expect(db.table_exists?(:users)).to be true
           migrate! :down
-          db.table_exists?(:users).should be_false
+          expect(db.table_exists?(:users)).to be false
         end
       end
       """
@@ -28,7 +28,7 @@ Feature: migration specs
       describe 'db/migrations/001_create_users.rb' do
         it "creates the users table" do
           migrate! :up
-          db.table_exists?(:users).should be_true
+          expect(db.table_exists?(:users)).to be true
         end
         
         it "makes an id column in users table" do

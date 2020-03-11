@@ -18,15 +18,15 @@ Feature: postgres schema
       
         describe "down" do
           it "drops the table" do
-            db.table_exists?(:users).should be_true
+            db.table_exists?(:users).should be true
             migrate! :down
-            db.table_exists?(:users).should be_false
+            db.table_exists?(:users).should be false
           end
 
           it "drops the table even when there are still records" do
             db[:users].insert id: 42
             migrate! :down
-            db.table_exists?(:users).should be_false
+            db.table_exists?(:users).should be false
           end
         end
       end
@@ -71,5 +71,3 @@ Feature: postgres schema
       """
     When I run `rspec spec`
     Then the examples should pass
-
-  

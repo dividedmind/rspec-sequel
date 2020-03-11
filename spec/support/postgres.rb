@@ -1,7 +1,7 @@
 require 'sequel'
+require 'rspec/sequel'
 
 module RSpec::Sequel::Test
-  
   def self.postgres
     @pg_db ||= connect_to_postgres
   end

@@ -1,7 +1,7 @@
 require 'aruba/cucumber'
-require_relative 'postgres'
 
 Before do
+  ENV['RUBYLIB'] = File.expand_path '../../lib', __dir__
   step %q{a file named "spec/spec_helper.rb" with:}, %Q{
     require 'rspec/sequel'
     Sequel::connect '#{RSpec::Sequel::Test::postgres.uri}'

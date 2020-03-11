@@ -2,9 +2,6 @@ require 'spec_helper'
 
 module RSpec::Sequel
   describe MigrationExampleGroup do
-    
-    it { should be_included_in_files_in('./spec/migrations/') }
-    
     let :group do
       RSpec::Core::ExampleGroup.describe do
         include MigrationExampleGroup
@@ -15,44 +12,44 @@ module RSpec::Sequel
     
     describe '::db' do
       it "is an in-memory sqlite db by default" do
-        instance.db.uri.should == 'sqlite:/'
+        expect(instance.db.uri).to eq 'sqlite:/'
       end
 
       it "can be overriden" do
         group.let(:db) { 'notreallyadb' }
-        instance.db.should == 'notreallyadb'
+        expect(instance.db).to eq 'notreallyadb'
       end
     end
     
     describe "#migrate!" do
       it "applies the migration in the proper direction" do
         migration = double "migration"
-        instance.stub migration: migration, db: 'notreallyadb'
+        allow(instance).to receive_messages migration: migration, db: 'notreallyadb'
         
-        migration.should_receive(:apply).with('notreallyadb', :dir)
+        expect(migration).to receive(:apply).with('notreallyadb', :dir)
         instance.migrate! :dir
       end
     end
     
     describe "::migration" do
       it "loads the migration from the migration_path" do
-        instance.stub migration_path: File.expand_path("../test_migration.rb", __FILE__)
+        allow(instance).to receive_messages migration_path: File.expand_path("../test_migration.rb", __FILE__)
         
-        instance.migration.up.call.should == "I'm up!"
-        instance.migration.down.call.should == "I'm down!"
+        expect(instance.migration.up.call).to eq "I'm up!"
+        expect(instance.migration.down.call).to eq "I'm down!"
       end
     end
     
     describe "::migration_path" do
       it "defaults to the group title" do
-        group.stub description: 'some/migration/path'
-        instance.migration_path.should == "#{Dir.pwd}/some/migration/path"
+        allow(group).to receive_messages description: 'some/migration/path'
+        expect(instance.migration_path).to eq "#{Dir.pwd}/some/migration/path"
       end
       
       it "uses the Rails root if available" do
         stub_const 'Rails', double(root: '/railroot')
-        group.stub description: 'some/migration/path'
-        instance.migration_path.should == "/railroot/some/migration/path"
+        allow(group).to receive_messages description: 'some/migration/path'
+        expect(instance.migration_path).to eq "/railroot/some/migration/path"
       end
     end
     
@@ -62,7 +59,7 @@ module RSpec::Sequel
       it "connects to the same database as the model, only with 'spec' schema" do
         stub_const 'Sequel::DATABASES', [postgres]
         group.postgres_schema
-        instance.db.opts.but(:orig_opts).should == postgres.opts.merge(search_path: %w(spec)).but(:orig_opts)
+        expect(instance.db.opts.but(:orig_opts)).to eq postgres.opts.merge(search_path: %w(spec)).but(:orig_opts)
       end
       
       it "runs the code inside on the database with a clean schema before running the context" do
@@ -73,14 +70,16 @@ module RSpec::Sequel
           end
         end
         
-        postgres.table_exists?(:spec__some_table).should be_false
+        table_name = Sequel.qualify 'spec', 'some_table'
+        expect(postgres.table_exists?(table_name)).to be false
         
-        group.example { postgres.table_exists?(:spec__some_table).should be_true }
-        reporter = RSpec::Core::Reporter.new
-        reporter.should_receive :example_passed
+        pg = postgres # ensure it's captured by the closure below
+        group.example { expect(pg.table_exists?(table_name)).to be true }
+        reporter = instance_double(RSpec::Core::Reporter).as_null_object
+        expect(reporter).to receive :example_passed
         group.run(reporter)
         
-        postgres.table_exists?(:spec__some_table).should be_false
+        expect(postgres.table_exists?(table_name)).to be false
       end
     end
     
